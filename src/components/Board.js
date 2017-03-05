@@ -2,7 +2,7 @@ import React from 'react';
 import Square from './Square'
 
 var Board = React.createClass({
-  checkForWin: function(i) {
+  checkForWin: function() {
     var past = 0;
     var won = false;
     for (var i = 0; i < 42; i ++) {
@@ -12,28 +12,27 @@ var Board = React.createClass({
         if (i-3*8 >= 0 && i%7 >= 3) { //i is the start position
           won = true
           for (var z = 1; z < 4; z ++) {
-            if (this.state.gamestate[i - z*8][1] != past) {
+            if (this.state.gamestate[i - z*8][1] != past) { //checks diagonally up and left
               won = false
               break
             }
           }
-          if (won) alert("WINNER")
+          if (won) return true;
         }
         if (i+3*8 <= 42 && i%7 <= 3) {
           won = true
           for (var z = 1; z < 4; z ++) {
-            if (this.state.gamestate[i + z*8][1] != past) {
+            if (this.state.gamestate[i + z*8][1] != past) { //diagonally down and right
               won = false
               break
             }
           }
-          if (won) alert("WINNER")
+          if (won) return true;
         }
-        //working
-        if (i-3*6 >= 0 && i%7 <= 3) { //i is the start position
+        if (i-3*6 >= 0 && i%7 <= 3) {
           won = true
           for (var z = 1; z < 4; z ++) {
-            if (this.state.gamestate[i - z*6][1] != past) {
+            if (this.state.gamestate[i - z*6][1] != past) { //diagonally up and right
               won = false
               break
             }
@@ -43,39 +42,38 @@ var Board = React.createClass({
         if (i+3*6 <= 42 && i%7 >= 3) {
           won = true
           for (var z = 1; z < 4; z ++) {
-            if (this.state.gamestate[i + z*6][1] != past) {
+            if (this.state.gamestate[i + z*6][1] != past) { //diagonally down and left
               won = false
               break
             }
           }
           if (won) alert("WINNER")
         }
-        if (i%7 -3 >= 0 && i%7 >= 3) {
+        if (i%7 >= 3) {
           won = true
           for (var z = 1; z < 4; z ++) {
-            if (this.state.gamestate[i - z][1] != past) {
+            if (this.state.gamestate[i - z][1] != past) { //horizontally left
               won = false
               break
             }
           }
-          if (won) alert("WINNER")
+          if (won) return true
         }
-        if (i%7 +3 <= 6 && i%7 <= 3) {
+        if (i%7 <= 3) {
           won = true
           for (var z = 1; z < 4; z ++) {
-            if (this.state.gamestate[i + z][1] != past) {
+            if (this.state.gamestate[i + z][1] != past) { //horizontally right
               console.log(i+z)
               won = false
               break
             }
           }
-          if (won) alert("WINNER")
+          if (won) return true
         }
         if (i - 7 *3 >= 0) {
           won = true
           for (var z = 1; z < 4; z ++) {
-            if (this.state.gamestate[i - 7*z][1] != past) {
-              console.log(i+z)
+            if (this.state.gamestate[i - 7*z][1] != past) { //vertically up
               won = false
               break
             }
@@ -85,13 +83,12 @@ var Board = React.createClass({
         if (i + 7 *3 < 42) {
           won = true
           for (var z = 1; z < 4; z ++) {
-            if (this.state.gamestate[i + 7*z][1] != past) {
-              console.log(i+z)
+            if (this.state.gamestate[i + 7*z][1] != past) { //vertically down
               won = false
               break
             }
           }
-          if (won) alert("WINNER")
+          if (won) return true
         }
       }
     }
@@ -120,9 +117,13 @@ handleChange : function(ind) {
     ind -= 7
     if(this.state.gamestate[ind - 7*y][1] == 0) {
       this.state.gamestate[ind - 7*y][1] = this.state.currentturn;
-      this.state.currentturn = this.state.currentturn == 1 ? 2: 1
+      if (this.checkForWin()) {
+        var winner = this.state.currentturn == 1 ? "Blue" : "Red"
+        alert(winner + " Wins!")
+        this.props.gameOver(winner);
+      }
+      this.state.currentturn = this.state.currentturn == 1 ? 2: 1 //blue is 1, red is 2
       this.setState({gamestate: this.state.gamestate, currentturn:this.state.currentturn})
-      this.checkForWin(ind - 7*y)
       break;
     }
   }

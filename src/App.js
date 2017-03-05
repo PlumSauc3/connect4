@@ -4,10 +4,19 @@ import Board from './components/Board'
 import './App.css';
 
 var App = React.createClass({
-    render : function() {
-        console.log(React.version)
-      return <Board class="board"/>;
-    }
+  componentWillMount() {
+    this.setState({inGame: true})
+  },
+
+  endGame(winner) {
+    this.setState({inGame: false, winner:winner})
+  },
+
+  render : function() {
+    if (this.state.inGame)
+      return <Board gameOver = {this.endGame} class="board"/>;
+    else return <p>The game is over! {this.state.winner} won!</p>
+  }
 });
 
 module.exports = App;
