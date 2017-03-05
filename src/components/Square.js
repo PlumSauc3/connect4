@@ -6,10 +6,13 @@ var Square = React.createClass({
   },
 
   render: function() {
-    var divstyle = {color: 'white'}
-    if (this.props.taken)
-       var divstyle = {color: 'blue'}
-    return <div className="square" style = {divstyle} onClick = {this.handleClick}>{this.props.index}</div>;
+    var divstyle = {}
+    if (this.props.player == 1)
+       var divstyle = {backgroundColor: 'blue'}
+    else if (this.props.player == 2) {
+      divstyle = {backgroundColor: "red"}
+    }
+    return <div className="square" style = {divstyle} onClick = {this.handleClick}></div>;
   }
 });
 
