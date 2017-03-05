@@ -6,7 +6,7 @@ import './App.css';
 var App = React.createClass({
     render : function() {
         console.log(React.version)
-      return <Board class = "board"/>;
+      return <Board class="board"/>;
     }
 });
 

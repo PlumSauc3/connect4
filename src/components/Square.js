@@ -12,7 +12,7 @@ var Square = React.createClass({
     else if (this.props.player == 2) {
       divstyle = {backgroundColor: "red"}
     }
-    return <div className="square" style = {divstyle} onClick = {this.handleClick}></div>;
+    return <div className="square" style={divstyle} onClick={this.handleClick}></div>;
   }
 });
 
