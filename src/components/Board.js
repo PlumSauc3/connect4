@@ -8,85 +8,68 @@ var Board = React.createClass({
     for (var i = 0; i < 42; i ++) {
       if (this.state.gamestate[i][1] != 0) { //Valid starting position
         past = this.state.gamestate[i][1]
-
-        if (i-3*8 >= 0 && i%7 >= 3) { //i is the start position
-          won = true
-          for (var z = 1; z < 4; z ++) {
-            if (this.state.gamestate[i - z*8][1] != past) { //checks diagonally up and left
-              won = false
-              break
+        //check all the cases
+        if (i+3*8 < 42 && i%7 <= 3) {
+          //diagonally down and right
+          won = false
+          if (this.state.gamestate[i+24][1] == past &&
+              this.state.gamestate[i+16][1] == past &&
+              this.state.gamestate[i+8][1] == past)
+            {
+              this.state.gamestate[i][1] = 3
+              this.state.gamestate[i+24][1] = 3
+              this.state.gamestate[i+16][1] = 3
+              this.state.gamestate[i+8][1] = 3
+              this.setState({gamestate:this.state.gamestate})
+              won = true
             }
-          }
           if (won) return true;
         }
-        if (i+3*8 <= 42 && i%7 <= 3) {
-          won = true
-          for (var z = 1; z < 4; z ++) {
-            if (this.state.gamestate[i + z*8][1] != past) { //diagonally down and right
-              won = false
-              break
+        if (i+3*6 < 42 && i%7 >= 3) {
+          //diagonally down and left
+          won = false
+          if (this.state.gamestate[i+18][1] == past &&
+              this.state.gamestate[i+12][1] == past &&
+              this.state.gamestate[i+6][1] == past)
+            {
+              this.state.gamestate[i][1] = 3
+              this.state.gamestate[i+18][1] = 3
+              this.state.gamestate[i+12][1] = 3
+              this.state.gamestate[i+6][1] = 3
+              this.setState({gamestate:this.state.gamestate})
+              won = true
             }
-          }
-          if (won) return true;
-        }
-        if (i-3*6 >= 0 && i%7 <= 3) {
-          won = true
-          for (var z = 1; z < 4; z ++) {
-            if (this.state.gamestate[i - z*6][1] != past) { //diagonally up and right
-              won = false
-              break
-            }
-          }
-          if (won) alert("WINNER")
-        }
-        if (i+3*6 <= 42 && i%7 >= 3) {
-          won = true
-          for (var z = 1; z < 4; z ++) {
-            if (this.state.gamestate[i + z*6][1] != past) { //diagonally down and left
-              won = false
-              break
-            }
-          }
-          if (won) alert("WINNER")
-        }
-        if (i%7 >= 3) {
-          won = true
-          for (var z = 1; z < 4; z ++) {
-            if (this.state.gamestate[i - z][1] != past) { //horizontally left
-              won = false
-              break
-            }
-          }
           if (won) return true
         }
-        if (i%7 <= 3) {
-          won = true
-          for (var z = 1; z < 4; z ++) {
-            if (this.state.gamestate[i + z][1] != past) { //horizontally right
-              console.log(i+z)
-              won = false
-              break
-            }
+        if (i%7 >= 3) {
+          //horizontal
+          won = false
+          if (this.state.gamestate[i-1][1] == past &&
+              this.state.gamestate[i-2][1] == past &&
+              this.state.gamestate[i-3][1] == past)
+            {
+              this.state.gamestate[i][1] = 3
+              this.state.gamestate[i-1][1] = 3
+              this.state.gamestate[i-2][1] = 3
+              this.state.gamestate[i-3][1] = 3
+              this.setState({gamestate:this.state.gamestate})
+              won = true
           }
           if (won) return true
         }
         if (i - 7 *3 >= 0) {
-          won = true
-          for (var z = 1; z < 4; z ++) {
-            if (this.state.gamestate[i - 7*z][1] != past) { //vertically up
-              won = false
-              break
-            }
-          }
-          if (won) alert("WINNER")
-        }
-        if (i + 7 *3 < 42) {
-          won = true
-          for (var z = 1; z < 4; z ++) {
-            if (this.state.gamestate[i + 7*z][1] != past) { //vertically down
-              won = false
-              break
-            }
+          //vertical
+          won = false
+          if (this.state.gamestate[i-21][1] == past &&
+              this.state.gamestate[i-14][1] == past &&
+              this.state.gamestate[i-7][1] == past)
+          {
+            this.state.gamestate[i][1] = 3
+            this.state.gamestate[i-21][1] = 3
+            this.state.gamestate[i-14][1] = 3
+            this.state.gamestate[i-7][1] = 3
+            this.setState({gamestate:this.state.gamestate})
+            won = true
           }
           if (won) return true
         }
@@ -108,7 +91,7 @@ renderSquare : function(i) {
 },
 
 handleChange : function(ind) {
-  for (var y = 0; y <= 6; y ++) {
+  for (var y = 0; y <= 6; y ++) { //Places the piece in the lowest available spot
     if (ind - 7 * y < 0) {
       break
     }
@@ -117,15 +100,15 @@ handleChange : function(ind) {
     ind -= 7
     if(this.state.gamestate[ind - 7*y][1] == 0) {
       this.state.gamestate[ind - 7*y][1] = this.state.currentturn;
-      if (this.checkForWin()) {
-        var winner = this.state.currentturn == 1 ? "Blue" : "Red"
-        alert(winner + " Wins!")
-        this.props.gameOver(winner);
-      }
+
+      this.setState({gamestate: this.state.gamestate})
       this.state.currentturn = this.state.currentturn == 1 ? 2: 1 //blue is 1, red is 2
-      this.setState({gamestate: this.state.gamestate, currentturn:this.state.currentturn})
+      this.setState({currentturn:this.state.currentturn})
       break;
     }
+  }
+  if (this.checkForWin()) { //Ends the game someone has won
+    this.props.gameOver(this.state.currentturn == 2 ? "Blue" : "Red");
   }
 },
 

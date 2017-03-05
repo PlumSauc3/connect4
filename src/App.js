@@ -9,14 +9,22 @@ var App = React.createClass({
   },
 
   endGame(winner) {
-    this.setState({inGame: false, winner:winner})
+    setTimeout(() => this.setState({inGame: false, winner:winner}), 1000)
+  },
+
+  playAgain() {
+    this.setState({inGame:true, winner:""})
   },
 
   render : function() {
     if (this.state.inGame)
       return <Board gameOver = {this.endGame} class="board"/>;
-    else return <p>The game is over! {this.state.winner} won!</p>
-  }
+    else return (
+      <div>
+      <p>The game is over! {this.state.winner} won!</p>
+      <button onClick={() => this.playAgain()}> Click here to play again</button>
+      </div>
+  )}
 });
 
 module.exports = App;
